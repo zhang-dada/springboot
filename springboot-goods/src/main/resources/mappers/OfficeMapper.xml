@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhangjiahui.goods.mapper.OfficeMapper">
+    <select id="selectObjects" resultType="com.zhangjiahui.goods.pojo.OfficetoolVo">
+           select o.*,t.tname from t_officetool o LEFT JOIN t_type t on o.typeid=t.tid
+           <where>
+               <if test="entity.name!=null and entity.description!=''">
+                   and o.name like '%${entity.name}%' or description like '%${entity.description}%'
+               </if>
+               <if test="entity.startTime!=null and entity.endTime!=null">
+                    and o.createTime between #{entity.startTime} and #{entity.endTime}
+               </if>
+               <if test="entity.typeid!=null and entity.typeid!=0">
+                   and o.typeid=#{entity.typeid}
+               </if>
+           </where>
+    </select>
+    <insert id="insertObjects">
+        insert into t_officetool(name,description,typeid,createTime,price,supplier,username,num)values(
+        #{entity.name},#{entity.description},#{entity.typeid},NOW(),#{entity.price},#{entity.supplier},#{entity.username},#{entity.num})
+    </insert>
+    <update id="updateObject">
+        update t_officetool set name=#{entity.name},description=#{entity.description},typeid=#{entity.typeid},price=#{entity.price}
+        ,num=#{entity.num},createTime=NOW(),supplier=#{entity.supplier},username=#{entity.username}
+        where id=#{entity.id}
+    </update>
+</mapper>
